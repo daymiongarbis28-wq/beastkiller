@@ -130,7 +130,7 @@
 
   <div class="container">
     <!-- Form -->
-    <form id="schoolForm" action="https://formspree.io/f/xjkejwjn" method="POST">
+    <form id="schoolForm" action="https://formbold.com/s/oDRRX" method="POST">
        
       <!-- Hidden fields so students don't see redirects -->
       <input type="hidden" name="_captcha" value="false">
@@ -235,4 +235,5 @@
     });
   </script>
 </body>
+
 </html>
